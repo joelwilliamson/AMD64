@@ -27,6 +27,26 @@ _start:
 */
 
 _print:
+	# _print is a wrapper around print_actual that preserves the values of all
+	# registers. This should ease its use in debugging, where I might not
+	# wish to go to the effort of saving several registers
+	push %rax
+	push %rbx
+	push %rsp
+	push %rdx
+	push %r15
+	movq 0x30(%rsp),%rax
+	push %rax
+	call print_actual
+	pop %rax
+	pop %r15
+	pop %rdx
+	pop %rsp
+	pop %rbx
+	pop %rax
+	ret
+
+print_actual:
 	# --------
 	# return address
 	# number to print in decimal
@@ -49,7 +69,7 @@ _print:
 	# return address
 	# previous value
 	# previous digit
-	call _print
+	call print_actual
 	print_digit:
 		pop %r15
 		call print_single_digit
