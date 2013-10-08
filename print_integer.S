@@ -9,19 +9,22 @@
 .bss
 	.lcomm digit,1
 .text
+/*
+Following are several lines of code used in the testing of this program
 _start:
 	# Print the int backwards to start
-	/* Registers:	rax : syscall/divident
-			rbx : base
-			rdx : divident tail (ie value to print)
-	*/
+	# Registers:	rax : syscall/divident
+	#		rbx : base
+	#		rdx : divident tail (ie value to print)
+	
 
-	pushq $123
+	pushq $9191
 	call _print
 
 	mov $60,%rax
 	mov $0,%rdi
 	syscall			# exit(0)
+*/
 
 _print:
 	# --------
