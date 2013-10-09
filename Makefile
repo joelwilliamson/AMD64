@@ -27,6 +27,24 @@ print_integer.o: print_integer.S
 exit.o: exit.S
 	as exit.S -o exit.o
 
+print_array.o: print_array.S
+	as -o print_array.{o,S}
+
+print_array_test.o: print_array_test.S
+	as -o print_array_test.{o,S}
+
+print_array_test: print_array.o print_array_test.o exit.o print_integer.o
+	ld -o print_array_test print_array.o print_array_test.o exit.o print_integer.o
+
+printf.o: printf.S
+	as -o printf.{o,S}
+
+printf_test.o: printf_test.S
+	as -o printf_test.{o,S}
+
+printf_test: printf.o print_integer.o exit.o printf_test.o
+	ld -o printf_test printf_test.o printf.o print_integer.o exit.o
+
 clean:
-	rm print_string_test atoi_test fibonacci
+	rm print_string_test atoi_test fibonacci print_array_test printf_test
 	rm *.o
