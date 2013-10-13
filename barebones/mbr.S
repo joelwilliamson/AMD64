@@ -6,11 +6,35 @@ _start:
 	loop:
 		movb 0x0(%di),%al
 		cmpb $0,%al
-		je stop
+		je read_message
 		movb $0x0e,%ah	# Use teletype output
 		int $0x10
 		inc %di
 		jmp loop
+
+read_message:
+	mov %sp,%di		# Store the stack pointer so we can read the whole string
+	mov %sp,%si		# Use %si to index the stack
+	read_loop:
+		xorb %bh,%bh	# Get from page 0
+		movb $0x08, %ah
+		int $0x10	# Get the character at cursor into al
+		inc %si
+		mov %al, (%si)	# Push the character onto the stack
+		cmp $0x0a,%al	# If the character was '\n', write the string
+		je write_message
+		jmp read_loop
+
+write_message:
+	write_loop:
+		inc %di
+		movb (%di),%al	# Get the next byte
+		cmp $0x0a,%al	# If the character was '\n', read another string
+		je read_message
+		movb $0x0e,%ah	# Teletype output
+		int $0x10
+		jmp write_loop
+
 
 	stop: jmp stop
 	
