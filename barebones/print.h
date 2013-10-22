@@ -1,10 +1,10 @@
 # print takes the address of the c-string to print
-# in %si:(%bx)
+# in %es:(%bx)
 print:
 	push %ax
 	push %bx
 print_loop:
-	movb %si:(%bx), %al	# Get the next byte
+	movb %es:(%bx), %al	# Get the next byte
 	cmpb $0x00,%al
 	je end_print
 	movb $0x0e,%ah
