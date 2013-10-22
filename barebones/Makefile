@@ -22,7 +22,7 @@ install_echo: echo_kernel.bin
 	sudo dd bs=512 count=1 if=echo_kernel.bin of=/dev/sdd
 
 echo_second_sector.o: echo_second_sector.S
-	as echo_second_sector.S -o echo_second_sector.o
+	../pas echo_second_sector.S echo_second_sector.o
 
 echo_second_sector.bin: echo_second_sector.o linker
 	ld -o echo_second_sector.nbin echo_second_sector.o --oformat=binary -Ttext=7c00
