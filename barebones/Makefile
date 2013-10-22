@@ -7,9 +7,33 @@ kernel.bin: mbr.o
 install: kernel.bin
 	sudo dd bs=512 count=1 if=kernel.bin of=/dev/sdd
 
+linker: linker.c
+	gcc -o linker linker.c
+
 echo_mbr.o: echo_mbr.S
 	as echo_mbr.S -o echo_mbr.o
 
-echo_kernel.bin: echo_mbr.o
+echo_kernel.bin: echo_mbr.o linker
 	ld -o echo_kernel.nbin echo_mbr.o --oformat=binary -Ttext=7c00
 	./linker echo_kernel.nbin echo_kernel.bin
+	rm echo_kernel.nbin
+
+install_echo: echo_kernel.bin
+	sudo dd bs=512 count=1 if=echo_kernel.bin of=/dev/sdd
+
+echo_second_sector.o: echo_second_sector.S
+	as echo_second_sector.S -o echo_second_sector.o
+
+echo_second_sector.bin: echo_second_sector.o linker
+	ld -o echo_second_sector.nbin echo_second_sector.o --oformat=binary -Ttext=7c00
+	./linker echo_second_sector.{n,}bin
+	rm echo_second_sector.nbin
+
+install_echo_second_sector: echo_second_sector.bin
+	sudo dd bs=512 count=1 if=echo_second_sector.bin of=/dev/sdd
+	sudo dd bs=512 count=1 if=/dev/zero of=/dev/sdd seek=1
+	echo -e -n \\xda\\xda | sudo dd bs=512 count=1 of=/dev/sdd seek=1
+
+.PHONY: clean
+clean:
+	-rm linker mbr.o kernel.bin echo_mbr.o echo_kernel.bin echo_second_sector.{bin,o}
