@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 	if (source == -1) {
 		error(1,errno,"The source file %s failed to open.",argv[1]);
 	}
-	int target = open(argv[2],O_WRONLY | O_CREAT);
+	int target = open(argv[2],O_WRONLY | O_CREAT,S_IRWXU);
 	if (target == -1) {
 		error (1,errno,"The target file %s failed to open.",argv[2]);
 	}
