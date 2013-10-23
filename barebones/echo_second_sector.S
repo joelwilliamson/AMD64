@@ -1,10 +1,14 @@
-# #define FIRST_HARD_DRIVE 0x80
-.set MAGICNUMBER, 0xdada
-
+#define FIRST_HARD_DRIVE 0x80
+#define MAGICNUMBER 0xdada
 .code16
+
+#include "print.h"
+
 .global _start
 .text
 _start:
+	mov $start_message, %bx	# Get the address of the message
+	call print
 	movb $0x02, %ah	# int 13,2 is "Read Disk Sectors"
 	movb $0x01, %al	#	al - Number of sectors to read
 	# The second sector should be head 0 , cylinder 0, sector 2
@@ -18,12 +22,21 @@ _start:
 
 	movw %es:(%bx), %ax	# Grab the first word read
 	cmpw $MAGICNUMBER, %ax	# Is it magic?
+	je found
 	
-	movb $0x0e,%ah		# If it is magic, print a
-	movb $0x00, %bh
-	movb $0x5c,%al
-	int $0x10
+	mov $not_found_message, %bx
+	call print
+	jmp halt
 
-
+found:	mov $found_message, %bx
+	call print
+	jmp halt
 halt:
 	jmp halt
+
+start_message:
+	.asciz "Checking for magic 0xdada"
+found_message:
+	.asciz "Magic found"
+not_found_message:
+	.asciz "Magic not found"
