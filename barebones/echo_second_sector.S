@@ -21,6 +21,7 @@ _start:
 	int $0x13	# Read the sector
 
 	movw %es:(%bx), %ax	# Grab the first word read
+	movw %bx,%si		# Save the address of the read memory
 	cmpw $MAGICNUMBER, %ax	# Is it magic?
 	je found
 	
@@ -29,6 +30,8 @@ _start:
 	jmp halt
 
 found:	mov $found_message, %bx
+	call print
+	mov %si,%bx		# Restore the address of the read memory
 	call print
 	jmp halt
 halt:
