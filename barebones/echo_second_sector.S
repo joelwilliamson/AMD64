@@ -32,7 +32,7 @@ _start:
 found:	mov $found_message, %bx
 	call print
 	mov %si,%bx		# Restore the address of the read memory
-	call print
+	call print_es
 	jmp halt
 halt:
 	jmp halt
