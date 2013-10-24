@@ -42,10 +42,10 @@ int main(int argc, char* argv[]) {
 
 	char buf[512];
 	memset(buf,0xff,512); // Fill the buffer with ones
-	memcpy(&sector_magic,buf,2); // Start with some magic
-	memcpy(&message,buf+2,sizeof(message));
-	memcpy(&code_magic,buf+2+message_size,2);
-	memcpy(program_text,buf+4+message_size,bytes_read);
+	memcpy(buf,&sector_magic,2); // Start with some magic
+	memcpy(buf+2,&message,sizeof(message));
+	memcpy(buf+2+message_size,&code_magic,2);
+	memcpy(buf+4+message_size,program_text,bytes_read);
 
 	size_t bytes_written = write(target,buf,sizeof(buf));
 	if (bytes_written == -1) {
