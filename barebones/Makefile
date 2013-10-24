@@ -32,7 +32,7 @@ echo_second_sector.bin: echo_second_sector.o linker
 install_echo_second_sector: echo_second_sector.bin
 	sudo dd bs=512 count=1 if=echo_second_sector.bin of=/dev/sdd
 	sudo dd bs=512 count=1 if=/dev/zero of=/dev/sdd seek=1
-	echo -e -n \\xda\\xda | sudo dd bs=512 count=1 of=/dev/sdd seek=1
+	echo -e -n \\xda\\xdaThis message should be found near the beginning of sector 2\\n\\r | sudo dd bs=512 count=1 of=/dev/sdd seek=1
 
 .PHONY: clean
 clean:
