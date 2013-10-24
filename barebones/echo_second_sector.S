@@ -44,10 +44,10 @@ halt:
 	jmp halt
 
 start_message:
-	.asciz "Checking for magic 0xdada\n"
+	.asciz "Checking for magic 0xdada\n\r"
 found_message:
-	.asciz "Magic found\n"
+	.asciz "Magic found\n\r"
 not_found_message:
-	.asciz "Magic not found\n"
+	.asciz "Magic not found\n\r"
 
 #include "print.h"
