@@ -2,7 +2,6 @@
 #define MAGICNUMBER 0xdada
 .code16
 
-#include "print.h"
 
 .global _start
 .text
@@ -43,3 +42,5 @@ found_message:
 	.asciz "Magic found"
 not_found_message:
 	.asciz "Magic not found"
+
+#include "print.h"
