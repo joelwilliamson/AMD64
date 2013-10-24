@@ -56,14 +56,14 @@ skip_message:
 	je found_code_magic	# Once we find the magic, break from the loop
 	add $2, %bx		# Go to the next word
 	jmp skip_message	# Keep looping
-found_code_magic
+found_code_magic:
 	add $2, %bx		# Pass the magic number
 	movw %es:(%bx), %cx	# Get the number of bytes to read
 	add $2, %bx		# Go to the beginning of the code
-	movw $end, %dx		# Start storing the code after everything important
+	movw $end, %di		# Start storing the code after everything important
 	code_copy_loop:
 		movw %es:(%bx), %si
-		movw %si,(%dx)
+		movw %si,(%di)
 		add $2,%bx
 		add $2,%dx
 		sub $2,%cx
@@ -86,4 +86,4 @@ not_found_message:
 
 # ENSURE NOTHING FOLLOWS THIS LABEL!!
 # It will be overwritten when new code is copied in from disk
-_end:
+end:
