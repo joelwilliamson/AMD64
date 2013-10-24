@@ -1,12 +1,13 @@
 #define FIRST_HARD_DRIVE 0x80
 #define MAGICNUMBER 0xdada
+#define CODE_MAGIC 0xadad
 .code16
 
 # load_code copies the second sector of the hard disk into the code segment,
 # then executes the code. It expects the following to be in the first sector:
 # 1. The magic number 0xdada
 # 2. A zero terminated message to print.
-# 3. The magic number 0xadad
+# 3. The magic number 0xadad, aligned to word boundaries
 # 4. 2-bytes containing the length of the code
 # 5. The code to execute
 
@@ -49,8 +50,28 @@ found:	mov $found_message, %bx
 
 	# Copy the read data from the extended segment into the code segment,
 	# then jump to the beginning of the new code
+skip_message:
+	movw %es:(%bx), %ax	# Check the next word
+	cmpw $CODE_MAGIC, %ax
+	je found_code_magic	# Once we find the magic, break from the loop
+	add $2, %bx		# Go to the next word
+	jmp skip_message	# Keep looping
+found_code_magic
+	add $2, %bx		# Pass the magic number
+	movw %es:(%bx), %cx	# Get the number of bytes to read
+	add $2, %bx		# Go to the beginning of the code
+	movw $end, %dx		# Start storing the code after everything important
+	code_copy_loop:
+		movw %es:(%bx), %si
+		movw %si,(%dx)
+		add $2,%bx
+		add $2,%dx
+		sub $2,%cx
+		cmp $0,%cx	# Check if we have read all the bytes
+		jnbe code_copy_loop
+	jmp end
+	
 
-	jmp halt
 halt:
 	jmp halt
 
