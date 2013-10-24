@@ -2,6 +2,13 @@
 #define MAGICNUMBER 0xdada
 .code16
 
+# load_code copies the second sector of the hard disk into the code segment,
+# then executes the code. It expects the following to be in the first sector:
+# 1. The magic number 0xdada
+# 2. A zero terminated message to print.
+# 3. The magic number 0xadad
+# 4. 2-bytes containing the length of the code
+# 5. The code to execute
 
 .global _start
 .text
@@ -39,6 +46,10 @@ found:	mov $found_message, %bx
 	call print
 	mov %si,%bx		# Restore the address of the read memory
 	call print_es
+
+	# Copy the read data from the extended segment into the code segment,
+	# then jump to the beginning of the new code
+
 	jmp halt
 halt:
 	jmp halt
@@ -51,3 +62,7 @@ not_found_message:
 	.asciz "Magic not found\n\r"
 
 #include "print.h"
+
+# ENSURE NOTHING FOLLOWS THIS LABEL!!
+# It will be overwritten when new code is copied in from disk
+_end:
