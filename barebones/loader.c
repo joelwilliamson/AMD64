@@ -45,7 +45,8 @@ int main(int argc, char* argv[]) {
 	memcpy(buf,&sector_magic,2); // Start with some magic
 	memcpy(buf+2,&message,sizeof(message));
 	memcpy(buf+2+message_size,&code_magic,2);
-	memcpy(buf+4+message_size,program_text,bytes_read);
+	memcpy(buf+4+message_size,&bytes_read,2);
+	memcpy(buf+6+message_size,program_text,bytes_read);
 
 	size_t bytes_written = write(target,buf,sizeof(buf));
 	if (bytes_written == -1) {
