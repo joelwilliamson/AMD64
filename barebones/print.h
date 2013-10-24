@@ -35,6 +35,10 @@ print_loop_es:
 	jmp print_loop_es
 
 end_print_es:
+	movb $0x10,%al
+	int $0x10
+	movb $0x13,%al
+	int $0x10
 	pop %bx
 	pop %ax
 	ret
