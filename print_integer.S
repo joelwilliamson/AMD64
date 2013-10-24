@@ -1,11 +1,13 @@
 # Prints an int to stdin, formatted as a base-10 number
 .global _start
-.global _print
+.global _print_integer
 
 .set write_code,1
 .set exit_code,60
 .set zero_offset,48
 
+.data
+	newline_buffer: .ascii "\n"
 .bss
 	.lcomm digit,1
 .text
@@ -26,7 +28,7 @@ _start:
 	syscall			# exit(0)
 */
 
-_print:
+_print_integer:
 	# _print is a wrapper around print_actual that preserves the values of all
 	# registers. This should ease its use in debugging, where I might not
 	# wish to go to the effort of saving several registers
@@ -35,10 +37,17 @@ _print:
 	push %rsp
 	push %rdx
 	push %r15
-	movq 0x30(%rsp),%rax
+	push %rsi
+	push %rdi
+
+	movq 0x40(%rsp),%rax
 	push %rax
 	call print_actual
 	pop %rax
+
+
+	pop %rdi
+	pop %rsi
 	pop %r15
 	pop %rdx
 	pop %rsp
