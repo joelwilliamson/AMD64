@@ -10,6 +10,9 @@
 # 3. The magic number 0xadad, aligned to word boundaries
 # 4. 2-bytes containing the length of the code
 # 5. The code to execute
+#
+# The code will be copied into memory beginning at 7e00, immediately following
+# the 55aa bytes that terminate the MBR
 
 .global _start
 .text
@@ -60,7 +63,7 @@ found_code_magic:
 	add $2, %bx		# Pass the magic number
 	movw %es:(%bx), %cx	# Get the number of bytes to read
 	add $2, %bx		# Go to the beginning of the code
-	movw $end, %di		# Start storing the code after everything important
+	movw $0x7e00, %di	# Start storing the code after everything important
 	code_copy_loop:
 		movw %es:(%bx), %si
 		movw %si,(%di)
@@ -83,7 +86,3 @@ not_found_message:
 	.asciz "Magic not found\n\r"
 
 #include "print.h"
-
-# ENSURE NOTHING FOLLOWS THIS LABEL!!
-# It will be overwritten when new code is copied in from disk
-end:
