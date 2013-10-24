@@ -15,7 +15,8 @@ _start:
 	movb $0x00, %ch	#	ch - cylinder number
 	movb $0x02, %cl	#	cl [7:6]cylinder, [5:0] sector
 	movb $0x00, %dh	#	dh - drive head
-	movb $0x83, %dl	#	dl - drive number (should be looped through 80-84)
+	movb $0x80, %dl	#	dl - drive number (should be looped through 80-84)
+drive_loop:
 	movw $0xff, %bx	#	bx - beginning of buffer to use
 	int $0x13	# Read the sector
 
@@ -26,7 +27,13 @@ _start:
 	
 	mov $not_found_message, %bx
 	call print
-	jmp halt
+	mov %si,%bx
+	call print_es
+
+	cmpb $0x84,%dl
+	je halt
+	inc %dl
+	jmp drive_loop
 
 found:	mov $found_message, %bx
 	call print
@@ -37,10 +44,10 @@ halt:
 	jmp halt
 
 start_message:
-	.asciz "Checking for magic 0xdada"
+	.asciz "Checking for magic 0xdada\n"
 found_message:
-	.asciz "Magic found"
+	.asciz "Magic found\n"
 not_found_message:
-	.asciz "Magic not found"
+	.asciz "Magic not found\n"
 
 #include "print.h"
