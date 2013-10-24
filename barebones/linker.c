@@ -29,9 +29,9 @@ int main(int argc, char** argv) {
 	}
 
 	#define MBR_PARTITION_TABLE_SIZE 64
-	// Zero out the partition table
+	// One out the partition table
 	// Not nescessary since the buffer is statically allocated
-	memset(buf+MBR_BOOTSTRAP_SIZE,0,MBR_PARTITION_TABLE_SIZE);
+	memset(buf+MBR_BOOTSTRAP_SIZE,0xff,MBR_PARTITION_TABLE_SIZE);
 
 	// Magic bytes
 	buf[510] = 0x55;
