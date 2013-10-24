@@ -34,6 +34,19 @@ install_echo_second_sector: echo_second_sector.bin
 	sudo dd bs=512 count=1 if=/dev/zero of=/dev/sdd seek=1
 	echo -e -n \\xda\\xdaThis message should be found near the beginning of sector 2\\n\\r | sudo dd bs=512 count=1 of=/dev/sdd seek=1
 
+load_code.o: load_code.S
+	../pas load_code.S load_code.o
+
+load_code.bin: load_code.o linker
+	ld -o load_code.nbin load_code.o --oformat=binary -Ttext=7c00
+	./linker load_code.{n,}bin
+	rm load_code.nbin
+
+install_load_code: load_code.bin echo_kernel.bin
+	sudo dd bs=512 count=1 if=load_code.bin of=/dev/sdd
+	sudo dd bs=512 count=1 if=/dev/zero of=/dev/sdd seek=1
+	echo -e -n \\xda\\xdaThis message should be found near the beginning of sector 2\\n\\r | sudo dd bs=512 count=1 of=/dev/sdd seek=1
+
 .PHONY: clean
 clean:
 	-rm linker mbr.o kernel.bin echo_mbr.o echo_kernel.bin echo_second_sector.{bin,o}
