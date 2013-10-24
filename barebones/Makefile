@@ -42,11 +42,19 @@ load_code.bin: load_code.o linker
 	./linker load_code.{n,}bin
 	rm load_code.nbin
 
-install_load_code: load_code.bin echo_kernel.bin
+loader: loader.c
+	gcc -o loader{,.c}
+
+echo_kernel_loadable.bin: echo_mbr.o loader
+	ld -o echo_kernel_loadable.nbin echo_mbr.o --oformat=binary -Ttext=7e00
+	./loader echo_kernel_loadable.{n,}bin
+	rm echo_kernel_loadable.nbin
+
+install_load_code: load_code.bin echo_kernel_loadable.bin
 	sudo dd bs=512 count=1 if=load_code.bin of=/dev/sdd
 	sudo dd bs=512 count=1 if=/dev/zero of=/dev/sdd seek=1
-	echo -e -n \\xda\\xdaThis message should be found near the beginning of sector 2\\n\\r | sudo dd bs=512 count=1 of=/dev/sdd seek=1
+	sudo dd bs=512 count=1 if=echo_kernel_loadable.bin of=/dev/sdd seek=1
 
 .PHONY: clean
 clean:
-	-rm linker mbr.o kernel.bin echo_mbr.o echo_kernel.bin echo_second_sector.{bin,o}
+	-rm linker loader mbr.o kernel.bin echo_mbr.o echo_kernel.bin echo_second_sector.{bin,o} echo_kernel_loadable{.o,.bin} load_code.{bin,o}
