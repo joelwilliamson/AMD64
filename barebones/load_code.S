@@ -72,7 +72,8 @@ found_code_magic:
 		sub $2,%cx
 		cmp $0,%cx	# Check if we have read all the bytes
 		jnbe code_copy_loop
-	jmp $0x7e00
+	pushw $0x7e00 		# This check is need to jump to an absolute address
+	ret
 	
 
 halt:
