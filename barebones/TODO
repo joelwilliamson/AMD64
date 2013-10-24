@@ -1,0 +1,2 @@
+Write a C program to create a nice second sector
+It needs to create a sector according to the spec at the top of load_code.S
