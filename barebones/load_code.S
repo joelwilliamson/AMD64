@@ -68,7 +68,7 @@ found_code_magic:
 		movw %es:(%bx), %si
 		movw %si,(%di)
 		add $2,%bx
-		add $2,%dx
+		add $2,%di
 		sub $2,%cx
 		cmp $0,%cx	# Check if we have read all the bytes
 		jnbe code_copy_loop
