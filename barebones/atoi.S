@@ -1,5 +1,4 @@
 .global _atoi
-.global _print
 
 /* atoi takes a pointer to a string
  * Iterate through the string with
