@@ -29,6 +29,8 @@ void kernel_main()
     vga.put("CPUID present.\n");
     cpu_name(name);
     vga.put(name);
+    vga.put("\nLargest Standard Function:");
+    vga.put(largest_standard_function());
     vga.put("\n");
   } else {
     vga.set_color(vga_color::RED,vga_color::BLACK);

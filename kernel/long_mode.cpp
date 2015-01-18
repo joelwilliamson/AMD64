@@ -21,12 +21,19 @@ xorl %%eax,%0 # Check if rFLAGS.ID stayed flipped )"
   return !retval;
 }
 
-const char * cpu_name(char name[13]) {
-  uint32_t first,mid,last;
-  uint32_t func = 0;
+void cpuid(uint32_t func, uint32_t& a, uint32_t& b, uint32_t& c, uint32_t& d)
+{
   asm volatile ("cpuid"
-		: "=b" (first), "=d" (mid), "=c" (last) 
+		: "=a" (a), "=b" (b), "=c" (c), "=d" (d)
 		: "a" (func));
+}
+
+const char * cpu_name(char name[13]) {
+  uint32_t first,mid,last,dump;
+  uint32_t func = 0;
+
+  cpuid(0,dump,first,last,mid);
+  
   for (int i = 0; i < 4; ++i) {
     name[i] = first & 0xFF;
     first >>= 8;
@@ -41,4 +48,10 @@ const char * cpu_name(char name[13]) {
   }
   name[12]=0;
   return name;
+}
+
+uint32_t largest_standard_function() {
+  uint32_t largest, dump;
+  cpuid(0,largest,dump,dump,dump);
+  return largest;
 }
