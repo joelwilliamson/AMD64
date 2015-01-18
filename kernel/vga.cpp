@@ -112,8 +112,8 @@ char to_hex(uint8_t nibble) {
 void VGA_Text_Buffer::put(uint32_t hex) {
   put('0');
   put('x');
-  while (hex) {
-    put(to_hex(hex & 0xF0000000 >> 28));
+  for (int i = 0; i < 9; ++i) {
+    put(to_hex((hex & 0xF0000000) >> 28));
     hex <<= 4;
   }
 }
