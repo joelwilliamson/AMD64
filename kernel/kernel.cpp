@@ -12,28 +12,28 @@ void kernel_main()
   VGA_Text_Buffer vga((uint16_t*)0xB8000);
 
   vga.set_color(vga_color::GREEN,vga_color::BLACK);
-  vga.put_cstr("Hello, World\n");
-  vga.put_cstr("This is a very long string that should span several lines. " \
+  vga.put("Hello, World\n");
+  vga.put("This is a very long string that should span several lines. " \
 	       "It goes on and on and on and on and on and on. I think this " \
 	       "should finally be long enough.\n");
-  vga.put_cstr("These\twords\tare\tall\tseparated\tby\ttabs.\n");
+  vga.put("These\twords\tare\tall\tseparated\tby\ttabs.\n");
   vga.set_fg(vga_color::BLUE);
-  vga.put_cstr("Blue Words...\n");
+  vga.put("Blue Words...\n");
   vga.set_fg(vga_color::RED);
-  vga.put_cstr("Red Words...\n");
+  vga.put("Red Words...\n");
   vga.set_color(vga_color::CYAN,vga_color::MAGENTA);
-  vga.put_cstr("Cyan on magenta words.\n");
-  vga.put_cstr("This is more text.\n");
+  vga.put("Cyan on magenta words.\n");
+  vga.put("This is more text.\n");
   if (has_cpuid()) {
     vga.set_color(vga_color::GREEN,vga_color::BLACK);
-    vga.put_cstr("CPUID present.\n");
+    vga.put("CPUID present.\n");
     cpu_name(name);
-    vga.put_cstr(name);
-    vga.put_cstr("\n");
+    vga.put(name);
+    vga.put("\n");
   } else {
     vga.set_color(vga_color::RED,vga_color::BLACK);
-    vga.put_cstr("CPUID not present.\n");
+    vga.put("CPUID not present.\n");
     vga.set_fg(vga_color::GREEN);
   }
-  vga.put_cstr("Done.\n");
+  vga.put("Done.\n");
 }

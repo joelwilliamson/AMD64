@@ -81,7 +81,7 @@ void VGA_Text_Buffer::scroll(size_t lines, vga_color fill) {
   row = row >= lines ? row - lines : 0;
 }
 
-void VGA_Text_Buffer::put_char (char c) {
+void VGA_Text_Buffer::put(char c) {
   if (c == '\n') {
     col = -1; // The column get incremented at the end, need to counteract that
     ++row;
@@ -97,8 +97,23 @@ void VGA_Text_Buffer::put_char (char c) {
   if (row >= rows) scroll();
 }
 
-void VGA_Text_Buffer::put_cstr(const char * str) {
+void VGA_Text_Buffer::put(const char * str) {
   while (*str) {
-    put_char(*str++);
+    put(*str++);
+  }
+}
+
+char to_hex(uint8_t nibble) {
+  if (nibble > 0xF) return '?';
+  if (nibble >= 0xA) return nibble + 55;
+  return nibble + 48;
+}
+
+void VGA_Text_Buffer::put(uint32_t hex) {
+  put('0');
+  put('x');
+  while (hex) {
+    put(to_hex(hex & 0xF0000000 >> 28));
+    hex <<= 4;
   }
 }

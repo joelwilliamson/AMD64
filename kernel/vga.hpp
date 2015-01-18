@@ -24,7 +24,6 @@ enum class vga_color {
 
 // Find the length of a null-terminated string
 size_t strlen (const char* str);
-
   
 class VGA_Text_Buffer {
   uint16_t color; // This constant take the form 0xBF00
@@ -52,7 +51,8 @@ public:
   vga_color get_fg_at(uint16_t row, uint16_t col);
   // Shift the text several lines up the screen
   void scroll(size_t lines = 4, vga_color fill=vga_color::BLACK);
-  void put_char (char c);
-  void put_cstr(const char * str);
+  void put(char c);
+  void put(const char * str);
+  void put(uint32_t hex);
 };
 
